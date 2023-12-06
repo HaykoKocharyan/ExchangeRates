@@ -1,0 +1,31 @@
+﻿version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: Exchange
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Hhkk0407
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  exchange-rates-webapi:
+    image: exchange-rates
+    build:
+      context: .
+      dockerfile: ./ExchangeRatesWebapi/Dockerfile
+    ports:
+      - "5284:80"
+    depends_on:
+      - postgres
+    environment:
+      ConnectionStrings__ExchangeContext: "Server=postgres;Port=5432;Database=ExchangeDB;User Id=postgres;Password=Hhkk0407;"
+      
+
+volumes:
+  postgres-data:
+    driver: local
